@@ -32,6 +32,14 @@ namespace Scan
             return result;
         }
 
+        public ScannerSession open_scanner(Scanner s)
+            throws ScannerError
+        {
+            Handle h;
+            ThrowIfFailed(Handle.open(s.original.name, out h));
+            return new ScannerSession(h);
+        }
+
         ~ScanContext()
         {
             exit();
@@ -52,9 +60,12 @@ namespace Scan
         public string name {get; construct;}
         public string device_type {get; construct;}
 
+        internal Device original;
+
         internal Scanner(Device d)
         {
             Object(model: d.model, vendor: d.vendor, name: d.name, device_type: d.type);
+            original = d;
         }
     }
 }
