@@ -1,3 +1,4 @@
+using Gee;
 using Sane;
 
 namespace Scan
@@ -16,9 +17,42 @@ namespace Scan
             }
         }
 
+        public Collection<Scanner> get_devices(bool local_only)
+        {
+            unowned Device?[] devices;
+            Sane.get_devices(out devices, ConvertToSaneBool(local_only));
+            int i = 0;
+            var result = new ArrayList<Scanner>();
+            while(devices[i] != null)
+            {
+                result.add(new Scanner(devices[i]));
+            }
+            return result;
+        }
+
         ~ScanContext()
         {
             exit();
+        }
+    }
+
+    private Bool ConvertToSaneBool(bool b)
+    {
+        if(b)
+            return Bool.TRUE;
+        return Bool.FALSE;
+    }
+
+    public class Scanner : Object
+    {
+        public string model {get; construct;}
+        public string vendor {get; construct;}
+        public string name {get; construct;}
+        public string device_type {get; construct;}
+
+        internal Scanner(Device d)
+        {
+            Object(model: d.model, vendor: d.vendor, name: d.name, device_type: d.type);
         }
     }
 }
