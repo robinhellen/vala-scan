@@ -8,7 +8,12 @@ namespace Scan
 
         construct
         {
-            init(out sane_version, null);
+            var status = init(out sane_version, null);
+            if(status != Status.GOOD)
+            {
+                error("Unable to initialize SANE library: %s", status.to_string());
+                assert_not_reached();
+            }
         }
 
         ~ScanContext()
