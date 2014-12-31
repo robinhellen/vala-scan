@@ -53,6 +53,19 @@ namespace Scan
         return Bool.FALSE;
     }
 
+    private bool ConvertFromSaneBool(Bool b)
+    {
+        switch(b)
+        {
+            case Bool.TRUE:
+                return true;
+            case Bool.FALSE:
+                return false;
+            default:
+                assert_not_reached();
+        }
+    }
+
     public class Scanner : Object
     {
         public string model {get; construct;}

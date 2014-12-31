@@ -5,7 +5,7 @@ namespace Scan
 {
     public class ScannerSession : Object
     {
-        private Handle handle;
+        internal Handle handle;
 
         internal ScannerSession(Handle h)
         {
@@ -81,6 +81,15 @@ namespace Scan
         internal BoolOption(OptionDescriptor o, ScannerSession s, Int n)
         {
             base(o, s, n);
+        }
+
+        public bool get_value()
+            throws ScannerError
+        {
+            Bool val = Bool.FALSE;
+            Int _;
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, &val, out _));
+            return ConvertFromSaneBool(val);
         }
     }
 
