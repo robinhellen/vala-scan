@@ -43,17 +43,17 @@ namespace Scan
             switch(option.type)
             {
                 case ValueType.BOOL:
-                    return new BoolOption(option, session);
+                    return new BoolOption(option, session, ordinal);
                 case ValueType.INT:
-                    return new IntOption(option, session);
+                    return new IntOption(option, session, ordinal);
                 case ValueType.FIXED:
-                    return new FixedOption(option, session);
+                    return new FixedOption(option, session, ordinal);
                 case ValueType.STRING:
-                    return new StringOption(option, session);
+                    return new StringOption(option, session, ordinal);
                 case ValueType.BUTTON:
-                    return new ButtonOption(option, session);
+                    return new ButtonOption(option, session, ordinal);
                 case ValueType.GROUP:
-                    return new GroupOption(option, session);
+                    return new GroupOption(option, session, ordinal);
                 default:
                     assert_not_reached();
             }
@@ -65,60 +65,62 @@ namespace Scan
 
         internal OptionDescriptor option;
         internal ScannerSession session;
+        internal Int ordinal;
 
-        internal Option(OptionDescriptor d, ScannerSession s)
+        internal Option(OptionDescriptor d, ScannerSession s, Int n)
         {
             Object(name: d.name, title: d.title, description: d.desc);
             option = d;
             session = s;
+            ordinal = n;
         }
     }
 
     public class BoolOption : Option
     {
-        public BoolOption(OptionDescriptor o, ScannerSession s)
+        internal BoolOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 
     public class IntOption : Option
     {
-        public IntOption(OptionDescriptor o, ScannerSession s)
+        internal IntOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 
     public class FixedOption : Option
     {
-        public FixedOption(OptionDescriptor o, ScannerSession s)
+        internal FixedOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 
     public class StringOption : Option
     {
-        public StringOption(OptionDescriptor o, ScannerSession s)
+        internal StringOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 
     public class ButtonOption : Option
     {
-        public ButtonOption(OptionDescriptor o, ScannerSession s)
+        internal ButtonOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 
     public class GroupOption : Option
     {
-        public GroupOption(OptionDescriptor o, ScannerSession s)
+        internal GroupOption(OptionDescriptor o, ScannerSession s, Int n)
         {
-            base(o, s);
+            base(o, s, n);
         }
     }
 }
