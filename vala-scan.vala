@@ -28,6 +28,7 @@ namespace Scan
             while(devices[i] != null)
             {
                 result.add(new Scanner(devices[i]));
+                i++;
             }
             return result;
         }
