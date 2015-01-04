@@ -15,8 +15,7 @@ namespace Scan
         public Collection<Option> get_options()
         {
             Int option_count = 0;
-            Int unused; // only get useful information if we pass SET to control_option
-            handle.control_option(0, Action.GET_VALUE, &option_count, out unused);
+            handle.control_option(0, Action.GET_VALUE, &option_count, null);
 
             var result = new ArrayList<Option>();
             for(int o = 1; o < option_count; o++)
@@ -74,6 +73,15 @@ namespace Scan
             session = s;
             ordinal = n;
         }
+
+        internal bool CheckActionStatus(Int status)
+        {
+            if((status & Info.RELOAD_OPTIONS) == Info.RELOAD_OPTIONS)
+                session.options_changed();
+            if((status & Info.RELOAD_PARAMS) == Info.RELOAD_PARAMS)
+                session.parameters_changed();
+            return (status & Info.INEXACT) == Info.INEXACT;
+        }
     }
 
     public class BoolOption : Option
@@ -87,9 +95,16 @@ namespace Scan
             throws ScannerError
         {
             Bool val = Bool.FALSE;
-            Int _;
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, &val, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, &val, null));
             return ConvertFromSaneBool(val);
+        }
+
+        public void set_value(bool val)
+            throws ScannerError
+        {
+            Int _;
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, &val, out _));
+            CheckActionStatus(_);
         }
     }
 
