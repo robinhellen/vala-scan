@@ -122,7 +122,7 @@ namespace Scan
             throws ScannerError
         {
             Int[] val = new Int[option.size];
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, &val, null));
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
             var result = new int[option.size];
             for(int i = 0; i < option.size; i++)
             {
