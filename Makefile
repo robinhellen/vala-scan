@@ -1,5 +1,6 @@
 
-LIBRARY_SOURCES = vala-scan.vala scanner_error.vala scanner_session.vala
+OPTIONS_SOURCES = options/option.vala options/int_option.vala options/bool_option.vala options/fixed_option.vala
+LIBRARY_SOURCES = vala-scan.vala scanner_error.vala scanner_session.vala $(OPTIONS_SOURCES)
 
 all: vala-scan.so
 
