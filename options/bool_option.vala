@@ -11,6 +11,7 @@ namespace Scan
 
         public bool get_value()
             throws ScannerError
+            requires(can_read_value)
         {
             Bool val = Bool.FALSE;
             ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, &val, null));
@@ -19,6 +20,7 @@ namespace Scan
 
         public void set_value(bool val)
             throws ScannerError
+            requires(can_set_value)
         {
             Int _;
             ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, &val, out _));

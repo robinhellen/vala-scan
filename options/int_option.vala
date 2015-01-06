@@ -14,6 +14,7 @@ namespace Scan
 
         public int[] get_value()
             throws ScannerError
+            requires(can_read_value)
         {
             Int[] val = new Int[option.size];
             ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
@@ -28,6 +29,7 @@ namespace Scan
         public int[] set_value(int[] val)
             throws ScannerError
             requires(val.length == option.size)
+            requires(can_set_value)
         {
             Int _;
             ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, &val, out _));
