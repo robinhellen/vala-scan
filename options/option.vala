@@ -35,7 +35,18 @@ namespace Scan
 
         internal Option(OptionDescriptor d, ScannerSession s, Int n)
         {
-            Object(name: d.name, title: d.title, description: d.desc);
+            Object(
+                name: d.name,
+                title: d.title,
+                description: d.desc,
+                can_read_value: ((d.cap & Capability.SOFT_DETECT) != 0),
+                can_set_value: ConvertFromSaneBool(d.cap.is_settable()),
+                hardware_set_value: ((d.cap & Capability.HARD_SELECT) != 0),
+                is_emulated: ((d.cap & Capability.EMULATED) != 0),
+                is_advanced: ((d.cap & Capability.ADVANCED) != 0),
+                can_set_auto: ((d.cap & Capability.AUTOMATIC) != 0),
+                is_active: ConvertFromSaneBool(d.cap.is_active())
+            );
             option = d;
             session = s;
             ordinal = n;
@@ -49,5 +60,14 @@ namespace Scan
                 session.parameters_changed();
             return (status & Info.INEXACT) == Info.INEXACT;
         }
+
+        public bool can_read_value {get; construct;}
+        public bool can_set_value {get; construct;}
+        public bool hardware_set_value {get; construct;}
+
+        public bool is_emulated {get; construct;}
+        public bool is_advanced {get; construct;}
+        public bool can_set_auto {get; construct;}
+        public bool is_active {get; construct;}
     }
 }
