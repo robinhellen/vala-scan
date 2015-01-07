@@ -9,7 +9,7 @@ namespace Scan
         internal IntOption(OptionDescriptor o, ScannerSession s, Int n)
         {
             base(o, s, n);
-            size = o.size;
+            size = (int)(o.size / sizeof(Int));
         }
 
         public int[] get_value()
@@ -28,7 +28,7 @@ namespace Scan
 
         public int[] set_value(int[] val)
             throws ScannerError
-            requires(val.length == option.size)
+            requires(val.length == size)
             requires(can_set_value)
         {
             Int _;

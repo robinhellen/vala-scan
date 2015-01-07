@@ -4,9 +4,12 @@ namespace Scan
 {
     public class FixedOption : Option
     {
+        public int size;
+
         internal FixedOption(OptionDescriptor o, ScannerSession s, Int n)
         {
             base(o, s, n);
+            size = (int)(o.size / sizeof(Int));
         }
 
         public int[] get_value()
@@ -25,7 +28,7 @@ namespace Scan
 
         public int[] set_value(int[] val)
             throws ScannerError
-            requires(val.length == option.size)
+            requires(val.length == size)
             requires(can_set_value)
         {
             Int _;
@@ -51,7 +54,7 @@ namespace Scan
 
         public double[] set_value_from_double(double[] val)
             throws ScannerError
-            requires(val.length == option.size)
+            requires(val.length == size)
             requires(can_set_value)
         {
             Int _;
