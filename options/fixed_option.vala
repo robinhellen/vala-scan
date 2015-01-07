@@ -16,10 +16,10 @@ namespace Scan
             throws ScannerError
             requires(can_read_value)
         {
-            Int[] val = new Int[option.size];
+            Int[] val = new Int[size];
             ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
-            var result = new int[option.size];
-            for(int i = 0; i < option.size; i++)
+            var result = new int[size];
+            for(int i = 0; i < size; i++)
             {
                 result[i] = val[i];
             }
@@ -42,10 +42,10 @@ namespace Scan
             throws ScannerError
             requires(can_read_value)
         {
-            Fixed[] val = new Fixed[option.size];
+            Fixed[] val = new Fixed[size];
             ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
-            var result = new double[option.size];
-            for(int i = 0; i < option.size; i++)
+            var result = new double[size];
+            for(int i = 0; i < size; i++)
             {
                 result[i] = val[i].to_double();
             }
@@ -58,8 +58,8 @@ namespace Scan
             requires(can_set_value)
         {
             Int _;
-            Fixed[] fixed_val = new Fixed[option.size];
-            for(int i = 0; i < option.size; i++)
+            Fixed[] fixed_val = new Fixed[size];
+            for(int i = 0; i < size; i++)
             {
                 fixed_val[i] = Fixed.from_double(val[i]);
             }

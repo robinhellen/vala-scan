@@ -16,10 +16,10 @@ namespace Scan
             throws ScannerError
             requires(can_read_value)
         {
-            Int[] val = new Int[option.size];
+            Int[] val = new Int[size];
             ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
-            var result = new int[option.size];
-            for(int i = 0; i < option.size; i++)
+            var result = new int[size];
+            for(int i = 0; i < size; i++)
             {
                 result[i] = val[i];
             }
