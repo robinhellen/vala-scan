@@ -36,9 +36,9 @@ namespace Scan
         internal Option(OptionDescriptor d, ScannerSession s, Int n)
         {
             Object(
-                name: d.name,
-                title: d.title,
-                description: d.desc,
+                name: d.name ?? "",
+                title: d.title ?? "",
+                description: d.desc ? "",
                 can_read_value: ((d.cap & Capability.SOFT_DETECT) != 0),
                 can_set_value: ConvertFromSaneBool(d.cap.is_settable()),
                 hardware_set_value: ((d.cap & Capability.HARD_SELECT) != 0),
