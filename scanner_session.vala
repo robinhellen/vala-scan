@@ -25,6 +25,27 @@ namespace Scan
             return result;
         }
 
+        public T? get_option_by_name<T>(string option_name)
+            requires(typeof(T).is_a(typeof(Option)))
+        {
+            Int option_count = 0;
+            handle.control_option(0, Action.GET_VALUE, &option_count, null);
+
+            for(int o = 1; o < option_count; o++)
+            {
+                var descriptor = handle.get_option_descriptor(o)
+                if(descriptor.name == option_name)
+                {
+                    var opt = Option.create(descriptor, this, o));
+                    if(opt.get_type != typeof(T))
+                        return null;
+
+                    return (T)opt;
+                }
+            }
+            return null;
+        }
+
         public signal void options_changed();
 
         public signal void parameters_changed();
