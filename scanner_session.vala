@@ -33,11 +33,11 @@ namespace Scan
 
             for(int o = 1; o < option_count; o++)
             {
-                var descriptor = handle.get_option_descriptor(o)
+                var descriptor = handle.get_option_descriptor(o);
                 if(descriptor.name == option_name)
                 {
-                    var opt = Option.create(descriptor, this, o));
-                    if(opt.get_type != typeof(T))
+                    var opt = Option.create(descriptor, this, o);
+                    if(opt.get_type() != typeof(T))
                         return null;
 
                     return (T)opt;

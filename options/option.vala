@@ -35,10 +35,13 @@ namespace Scan
 
         internal Option(OptionDescriptor d, ScannerSession s, Int n)
         {
+            var name = (string)d.name ?? "";
+            var title = (string)d.title ?? "";
+            var desc = (string)d.desc ?? "";
             Object(
-                name: d.name ?? "",
-                title: d.title ?? "",
-                description: d.desc ? "",
+                name: name,
+                title: title,
+                description: desc,
                 can_read_value: ((d.cap & Capability.SOFT_DETECT) != 0),
                 can_set_value: ConvertFromSaneBool(d.cap.is_settable()),
                 hardware_set_value: ((d.cap & Capability.HARD_SELECT) != 0),
