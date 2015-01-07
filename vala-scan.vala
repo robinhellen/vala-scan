@@ -6,15 +6,22 @@ namespace Scan
     public class ScanContext : Object
     {
         private Int sane_version;
+        private static ScanContext current_context = null;
 
         construct
         {
+            if(current_context != null)
+            {
+                error("Only one scan context may be active at a time.");
+                assert_not_reached();
+            }
             var status = init(out sane_version, null);
             if(status != Status.GOOD)
             {
                 error("Unable to initialize SANE library: %s", status.to_string());
                 assert_not_reached();
             }
+            current_context = this;
         }
 
         public Collection<Scanner> get_devices(bool local_only)
@@ -44,6 +51,7 @@ namespace Scan
         ~ScanContext()
         {
             exit();
+            current_context = null;
         }
     }
 
