@@ -50,9 +50,63 @@ namespace Scan
 
         public signal void parameters_changed();
 
+        public ScannedFrame capture()
+            throws ScannerError
+        {
+            ThrowIfFailed(handle.start());
+            Parameters p;
+            ThrowIfFailed(handle.get_parameters(out p));
+            var result = new ScannedFrame(p);
+
+            var buffer = new Byte[128];
+            int bytes_read = 0;
+            while(true)
+            {
+                Int len;
+                var status = handle.read(buffer, out len);
+                if(status == Status.EOF)
+                {
+                    break;
+                }
+                ThrowIfFailed(status);
+
+                // This is a reference into the original not a copy (see Vala manual)
+                unowned uint8[] dest_slice = result.data[bytes_read: bytes_read + len];
+
+                // copy into data
+                for(int i = 0; i < len; i++)
+                {
+                    dest_slice[i] = buffer[i];
+                }
+                bytes_read += len;
+            }
+            return result;
+        }
+
         ~ScannerSession()
         {
             handle.close();
         }
+    }
+
+    public class ScannedFrame : Object
+    {
+        internal ScannedFrame(Parameters p)
+        {
+            BytesPerLine = p.bytes_per_line;
+            PixelsPerLine = p.pixels_per_line;
+            Lines = p.lines;
+            Depth = p.depth;
+
+            var total_bytes = BytesPerLine * Lines;
+            data = new uint8[total_bytes];
+        }
+
+        public int BytesPerLine;
+        public int PixelsPerLine;
+        public int Lines;
+        public int Depth;
+
+        public uint8[] data;
     }
 }
