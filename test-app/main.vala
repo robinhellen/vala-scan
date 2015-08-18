@@ -23,7 +23,7 @@ namespace Scan.TestApp
         var options = session.get_options();
         foreach(var option in options)
         {
-            stdout.printf(@"Option: $(option.name): $(option.title): $(option.description)\n");
+            stdout.printf(@"Option $((int32)option.ordinal): $(option.name): $(option.title): $(option.description)\n");
 
             var boolOpt = option as BoolOption;
             if(boolOpt != null)
@@ -33,12 +33,40 @@ namespace Scan.TestApp
             var intOpt = option as IntOption;
             if(intOpt != null)
             {
-                stdout.printf(@"Integer option. Has $(intOpt.size) values: [");
-                foreach(var i in intOpt.get_value())
+                stdout.printf(@"Integer option.");
+                if(intOpt.get_legal_values() != null)
                 {
-                    stdout.printf(@"$i, ");
+                    stdout.printf(" Legal values are: [");
+                    foreach(var l in intOpt.get_legal_values())
+                    {
+                        stdout.printf(@"$l, ");
+                    }
+                    stdout.printf(@"].");
+                }
+                stdout.printf(@" Has $(intOpt.size) values: [");
+                try
+                {
+                    var values = intOpt.get_value();
+                    foreach(var i in values)
+                    {
+                        stdout.printf(@"$i, ");
+                    }
+                }
+                catch(ScannerError e)
+                {
+                    stdout.printf(@"$(e.message)");
                 }
                 stdout.printf("].\n");
+            }
+            var stringOpt = option as StringOption;
+            if(stringOpt != null)
+            {
+                stdout.printf(@"String option. Legal values are: [");
+                foreach(var st in stringOpt.get_legal_values())
+                {
+                    stdout.printf(@"$st, ");
+                }
+                stdout.printf(@"]. Current value is $(stringOpt.get_value()).\n");
             }
         }
 

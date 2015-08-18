@@ -6,49 +6,60 @@ namespace Scan
     public class ScannerSession : Object
     {
         internal Handle handle;
+        public Parameters current_parameters;
+        private Map<string, Option> current_options;
 
         internal ScannerSession(Handle h)
         {
             handle = h;
+            handle.get_parameters(out current_parameters);
         }
 
         public Collection<Option> get_options()
         {
-            Int option_count = 0;
-            handle.control_option(0, Action.GET_VALUE, &option_count, null);
+            load_options();
 
-            var result = new ArrayList<Option>();
-            for(int o = 1; o < option_count; o++)
-            {
-                result.add(Option.create(handle.get_option_descriptor(o), this, o));
-            }
-            return result;
+            return current_options.values;
         }
 
         public T? get_option_by_name<T>(string option_name)
             requires(typeof(T).is_a(typeof(Option)))
         {
+            load_options();
+            var opt = current_options[option_name];
+
+            if(opt == null || opt.get_type() != typeof(T))
+                return null;
+
+            return (T)opt;
+        }
+
+        private void load_options()
+        {
+            if(current_options != null)
+                return;
+
+            current_options = new HashMap<string, Option>(x => str_hash(x), (x,y) => strcmp(x,y) == 0);
+
             Int option_count = 0;
             handle.control_option(0, Action.GET_VALUE, &option_count, null);
 
-            for(int o = 1; o < option_count; o++)
+            for(int o = 0; o < option_count; o++)
             {
-                var descriptor = handle.get_option_descriptor(o);
-                if(descriptor.name == option_name)
-                {
-                    var opt = Option.create(descriptor, this, o);
-                    if(opt.get_type() != typeof(T))
-                        return null;
-
-                    return (T)opt;
-                }
+                var option = Option.create(handle.get_option_descriptor(o), this, o);
+                current_options[option.name] = option;
             }
-            return null;
         }
 
-        public signal void options_changed();
+        public virtual signal void options_changed()
+        {
+            current_options = null;
+        }
 
-        public signal void parameters_changed();
+        public virtual signal void parameters_changed()
+        {
+            handle.get_parameters(out current_parameters);
+        }
 
         public ScannedFrame capture()
             throws ScannerError
@@ -64,6 +75,7 @@ namespace Scan
             {
                 Int len;
                 var status = handle.read(buffer, out len);
+                ThrowIfFailed(handle.get_parameters(out p));
                 if(status == Status.EOF)
                 {
                     break;

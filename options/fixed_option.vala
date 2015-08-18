@@ -12,7 +12,7 @@ namespace Scan
             size = (int)(o.size / sizeof(Int));
         }
 
-        public int[] get_value()
+        public int32[] get_value()
             throws ScannerError
             requires(can_read_value)
         {
@@ -26,13 +26,13 @@ namespace Scan
             return result;
         }
 
-        public int[] set_value(int[] val)
+        public int32[] set_value(int32[] val)
             throws ScannerError
             requires(val.length == size)
             requires(can_set_value)
         {
             Int _;
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, &val, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, val, out _));
             if(CheckActionStatus(_))
                 return get_value();
             return val;
@@ -64,9 +64,11 @@ namespace Scan
                 fixed_val[i] = Fixed.from_double(val[i]);
             }
 
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, &val, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, fixed_val, out _));
             if(CheckActionStatus(_))
+            {
                 return get_value_as_double();
+            }
             return val;
         }
     }

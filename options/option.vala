@@ -28,10 +28,11 @@ namespace Scan
         public string name {get; construct;}
         public string title {get; construct;}
         public string description {get; construct;}
+        public string unit {get; construct;}
 
         internal OptionDescriptor option;
         internal ScannerSession session;
-        internal Int ordinal;
+        public Int ordinal;
 
         internal Option(OptionDescriptor d, ScannerSession s, Int n)
         {
@@ -48,7 +49,8 @@ namespace Scan
                 is_emulated: ((d.cap & Capability.EMULATED) != 0),
                 is_advanced: ((d.cap & Capability.ADVANCED) != 0),
                 can_set_auto: ((d.cap & Capability.AUTOMATIC) != 0),
-                is_active: ConvertFromSaneBool(d.cap.is_active())
+                is_active: ConvertFromSaneBool(d.cap.is_active()),
+                unit: GetUnitText(d.unit)
             );
             option = d;
             session = s;
@@ -72,5 +74,27 @@ namespace Scan
         public bool is_advanced {get; construct;}
         public bool can_set_auto {get; construct;}
         public bool is_active {get; construct;}
+
+        private static string GetUnitText(Unit unit)
+        {
+            switch(unit)
+            {
+                case Unit.NONE:
+                    return "";
+                case Unit.PIXEL:
+                    return "pixel";
+                case Unit.BIT:
+                    return "bit";
+                case Unit.MM:
+                    return "mm";
+                case Unit.DPI:
+                    return "DPI";
+                case Unit.PERCENT:
+                    return "%";
+                case Unit.MICROSECOND:
+                    return "Microsecond";
+            }
+            assert_not_reached();
+        }
     }
 }

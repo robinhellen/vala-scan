@@ -1,5 +1,5 @@
 all:
-	valac-0.24 main.vala\
+	valac-0.26 main.vala\
 		--pkg=sane-backends\
 		--pkg=vala-scan\
 		--pkg=gee-0.8\
