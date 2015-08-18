@@ -61,7 +61,7 @@ namespace Scan
             handle.get_parameters(out current_parameters);
         }
 
-        public ScannedFrame capture()
+        public ScannedFrame capture(int buffer_size = 1024)
             throws ScannerError
         {
             ThrowIfFailed(handle.start());
@@ -69,7 +69,7 @@ namespace Scan
             ThrowIfFailed(handle.get_parameters(out p));
             var result = new ScannedFrame(p);
 
-            var buffer = new Byte[128];
+            var buffer = new Byte[buffer_size];
             int bytes_read = 0;
             while(true)
             {
