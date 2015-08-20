@@ -17,7 +17,7 @@ namespace Scan
             requires(can_read_value)
         {
             Int[] val = new Int[size];
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.GET_VALUE, val, null));
             var result = new int[size];
             for(int i = 0; i < size; i++)
             {
@@ -38,7 +38,7 @@ namespace Scan
                 sane_values[i] = val[i];
             }
 
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, sane_values, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.SET_VALUE, sane_values, out _));
             if(CheckActionStatus(_))
             {
                 return get_value();

@@ -42,7 +42,7 @@ namespace Scan
             current_options = new HashMap<string, Option>(x => str_hash(x), (x,y) => strcmp(x,y) == 0);
 
             Int option_count = 0;
-            handle.control_option(0, Action.GET_VALUE, &option_count, null);
+            handle.control_option(0, Sane.Action.GET_VALUE, &option_count, null);
 
             for(int o = 0; o < option_count; o++)
             {
@@ -92,6 +92,61 @@ namespace Scan
                 }
                 bytes_read += len;
             }
+            return result;
+        }
+
+        public async ScannedFrame capture_async(int buffer_size = 1024)
+            throws ScannerError
+        {
+            handle.cancel();
+            Status s;
+            while((s = handle.start()) == Status.DEVICE_BUSY)
+                ;
+            ThrowIfFailed(s);
+            ThrowIfFailed(handle.set_io_mode(Bool.TRUE));
+            Parameters p;
+            ThrowIfFailed(handle.get_parameters(out p));
+            var result = new ScannedFrame(p);
+
+            Int fd;
+            ThrowIfFailed(handle.get_select_fd(out fd));
+            int unixFd = fd;
+            var channel = new IOChannel.unix_new(unixFd);
+            var source = new IOSource(channel, IOCondition.IN);
+            int bytes_read = 0;
+            source.set_callback((_, __) => {
+                var buffer = new Byte[buffer_size];
+                while(true)
+                {
+                    Int len;
+                    var status = handle.read(buffer, out len);
+
+                    if(status == Status.EOF)
+                    {
+                        Idle.add(capture_async.callback);
+                        return false;
+                    }
+                    if(len == 0)
+                    {
+                        return true;
+                    }
+                    ThrowIfFailed(status);
+
+                    // This is a reference into the original not a copy (see Vala manual)
+                    unowned uint8[] dest_slice = result.data[bytes_read: bytes_read + len];
+
+                    // copy into data
+                    for(int i = 0; i < len; i++)
+                    {
+                        dest_slice[i] = buffer[i];
+                    }
+                    bytes_read += len;
+                }
+                return false;
+            });
+            source.attach(null);
+            yield;
+
             return result;
         }
 

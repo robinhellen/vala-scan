@@ -17,7 +17,7 @@ namespace Scan
             requires(can_read_value)
         {
             Int[] val = new Int[size];
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.GET_VALUE, val, null));
             var result = new int[size];
             for(int i = 0; i < size; i++)
             {
@@ -32,7 +32,7 @@ namespace Scan
             requires(can_set_value)
         {
             Int _;
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, val, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.SET_VALUE, val, out _));
             if(CheckActionStatus(_))
                 return get_value();
             return val;
@@ -43,7 +43,7 @@ namespace Scan
             requires(can_read_value)
         {
             Fixed[] val = new Fixed[size];
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.GET_VALUE, val, null));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.GET_VALUE, val, null));
             var result = new double[size];
             for(int i = 0; i < size; i++)
             {
@@ -64,7 +64,7 @@ namespace Scan
                 fixed_val[i] = Fixed.from_double(val[i]);
             }
 
-            ThrowIfFailed(session.handle.control_option(ordinal, Action.SET_VALUE, fixed_val, out _));
+            ThrowIfFailed(session.handle.control_option(ordinal, Sane.Action.SET_VALUE, fixed_val, out _));
             if(CheckActionStatus(_))
             {
                 return get_value_as_double();
