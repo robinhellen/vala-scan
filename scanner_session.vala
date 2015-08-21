@@ -95,10 +95,9 @@ namespace Scan
             return result;
         }
 
-        public async ScannedFrame capture_async(int buffer_size = 1024)
+        public async ScannedFrame capture_async(int buffer_size = 1024, Cancellable cancel = null)
             throws ScannerError
         {
-            handle.cancel();
             Status s;
             while((s = handle.start()) == Status.DEVICE_BUSY)
                 ;
@@ -118,6 +117,11 @@ namespace Scan
                 var buffer = new Byte[buffer_size];
                 while(true)
                 {
+                    if(cancel != null && cancel.is_cancelled())
+                    {
+                        handle.cancel();
+                        throw new ScannerError.Cancelled("The capture operation was cancelled.");
+                    }
                     Int len;
                     var status = handle.read(buffer, out len);
 
