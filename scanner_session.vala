@@ -98,6 +98,7 @@ namespace Scan
         public async ScannedFrame capture_async(ProgressReporter reporter = null, int buffer_size = 1024, Cancellable cancel = null)
             throws ScannerError
         {
+            ThrowIfFailed(handle.start());
             ThrowIfFailed(handle.set_io_mode(Bool.TRUE));
             Parameters p;
             ThrowIfFailed(handle.get_parameters(out p));
