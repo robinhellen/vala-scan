@@ -95,7 +95,7 @@ namespace Scan
             return result;
         }
 
-        public async ScannedFrame capture_async(int buffer_size = 1024, Cancellable cancel = null)
+        public async ScannedFrame capture_async(ProgressReporter reporter = null, int buffer_size = 1024, Cancellable cancel = null)
             throws ScannerError
         {
             ThrowIfFailed(handle.set_io_mode(Bool.TRUE));
@@ -109,6 +109,8 @@ namespace Scan
             var channel = new IOChannel.unix_new(unixFd);
             var source = new IOSource(channel, IOCondition.IN);
             int bytes_read = 0;
+            double total_bytes = p.bytes_per_line * p.lines;
+            if(reporter != null) reporter.report(0);
             source.set_callback((_, __) => {
                 var buffer = new Byte[buffer_size];
                 while(true)
@@ -123,6 +125,7 @@ namespace Scan
 
                     if(status == Status.EOF)
                     {
+                        reporter.report(1);
                         Idle.add(capture_async.callback);
                         return false;
                     }
@@ -141,6 +144,7 @@ namespace Scan
                         dest_slice[i] = buffer[i];
                     }
                     bytes_read += len;
+                    if(reporter != null) reporter.report(bytes_read / total_bytes);
                 }
                 return false;
             });

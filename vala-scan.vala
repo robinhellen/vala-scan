@@ -90,4 +90,9 @@ namespace Scan
             original = d;
         }
     }
+
+    public interface ProgressReporter : Object
+    {
+        public abstract void report(double progress);
+    }
 }
