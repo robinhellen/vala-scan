@@ -95,7 +95,7 @@ namespace Scan
             return result;
         }
 
-        public async ScannedFrame capture_async(ProgressReporter reporter = null, int buffer_size = 1024, Cancellable cancel = null)
+        public async ScannedFrame capture_async(ProgressReporter? reporter = null, int buffer_size = 1024, Cancellable? cancel = null)
             throws ScannerError
         {
             ThrowIfFailed(handle.start());
